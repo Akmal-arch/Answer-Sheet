@@ -36,16 +36,21 @@ function displayAnswers() {
         answersDiv.appendChild(answer);
     });
     const answerContainer = document.getElementById('answer-container');
-    const submitBtn = document.createElement('button');
-    submitBtn.textContent = 'Download as Text File';
-    submitBtn.id = "submit";
-    answerContainer.appendChild(submitBtn);
+    const pdfBtn = document.createElement('button');
+    pdfBtn.textContent = 'Download as PDF';
+    pdfBtn.id = "pdfBtn";
+    answerContainer.appendChild(pdfBtn);
+    const txtBtn = document.createElement('button');
+    txtBtn.textContent = 'Download as TXT';
+    txtBtn.id = "txtBtn";
+    answerContainer.appendChild(txtBtn);
 
     document.getElementById('input-container').classList.add('hidden');
     document.getElementById('answer-container').classList.remove('hidden');
+
     let answersContent = document.getElementById("answers");
 
-    document.getElementById("submit").addEventListener("click", () => {
+    document.getElementById("txtBtn").addEventListener("click", () => {
         let valueinput = answersContent.innerText;
         let blobdtMIME = new Blob([valueinput], { type: "text/plain" });
         let url = URL.createObjectURL(blobdtMIME);
@@ -55,5 +60,11 @@ function displayAnswers() {
         anele.click();
         console.log(blobdtMIME);
     });
-
+    document.getElementById("pdfBtn").addEventListener("click", () => {
+        let valueinput = answersContent.innerText;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text(valueinput, 10, 10);
+        doc.save("answers.pdf");
+    });
 }
