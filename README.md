@@ -9,7 +9,7 @@
 - **Easy Navigation**: Intuitive user interface with a clean design to focus on your notes without distractions.
 - **Data Security**: Your notes are stored securely to ensure privacy and integrity.
 
-##Screenshots
+## Screenshots
 ![image](https://github.com/user-attachments/assets/96fef133-b499-4994-b30a-bbb4dc4683db)
 ![image](https://github.com/user-attachments/assets/e9a1976c-95ea-4040-9a0e-ab4de964badb)
 ![image](https://github.com/user-attachments/assets/08adac92-98a8-4511-8d33-4d4de3e08f49)
