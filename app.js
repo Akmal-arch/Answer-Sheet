@@ -45,6 +45,47 @@ function displayAnswers() {
     const checkBtn = document.createElement('button');
     checkBtn.textContent = 'Check Answers';
     checkBtn.addEventListener('click', () => {
+        const takeScrShotBtn = document.createElement('button');
+        takeScrShotBtn.textContent = 'Download Image';
+        //Function to make an image of specific element
+        function screenshotAndCropElement(selector) {
+            const element = document.querySelector(selector);
+            if (!element) {
+                console.error("Element not found");
+                return;
+            }
+
+            html2canvas(element).then(canvas => {
+                // Get the current canvas height
+                const originalHeight = canvas.height;
+                const cropHeight = 230;  // Height to crop from the bottom
+
+                // Calculate the new height after cropping
+                const newHeight = originalHeight - cropHeight;
+
+                // Create a new canvas for the cropped image
+                const croppedCanvas = document.createElement('canvas');
+                const croppedContext = croppedCanvas.getContext('2d');
+
+                // Set the dimensions of the new canvas
+                croppedCanvas.width = canvas.width;
+                croppedCanvas.height = newHeight;
+
+                // Draw the cropped portion (excluding the bottom 120px) onto the new canvas
+                croppedContext.drawImage(canvas, 0, 0, canvas.width, newHeight, 0, 0, canvas.width, newHeight);
+
+                // Create a link to download the cropped image
+                const link = document.createElement("a");
+                link.download = "result.png";  // Name of the cropped image
+                link.href = croppedCanvas.toDataURL();  // Convert the cropped canvas to data URL
+                link.click();  // Trigger the download
+            });
+        }
+
+        // Event listener for the button click
+        takeScrShotBtn.addEventListener("click", function () {
+            screenshotAndCropElement('#answer-container');
+        });
         const cpyResultBtn = document.createElement('button');
         cpyResultBtn.textContent = 'Copy Results to Clipboard';
         cpyResultBtn.addEventListener('click', () => {
@@ -137,6 +178,7 @@ function displayAnswers() {
         });
         ansCounterDiv.appendChild(correctCounter);
         ansCounterDiv.appendChild(incorrectCounter);
+        ansCounterDiv.appendChild(takeScrShotBtn)
         ansCounterDiv.appendChild(cpyResultBtn);
         ansCounterDiv.appendChild(backBtn)
         answerContainer.appendChild(ansCounterDiv);

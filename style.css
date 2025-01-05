@@ -11,6 +11,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    flex-direction: column;
     padding: 2rem 0;
 }
 
@@ -139,4 +140,8 @@ button.disabled {
     border: 1px solid #dc3545;
     border-radius: 6px;
     padding: 5px 10px;
+}
+
+.reload-div button {
+    background-color: red;
 }
