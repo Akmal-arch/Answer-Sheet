@@ -26,6 +26,8 @@ function generateFields() {
 }
 
 function displayAnswers() {
+    const answerContainer = document.getElementById('answer-container');
+
     const inputs = document.querySelectorAll('#input-container input[type="text"]');
     const answersDiv = document.getElementById('answers');
     answersDiv.innerHTML = '';
@@ -88,39 +90,36 @@ function displayAnswers() {
 
     ansCounterDiv.appendChild(correctCounter);
     ansCounterDiv.appendChild(incorrectCounter);
-    document.getElementById('answer-container').appendChild(ansCounterDiv);
+    answerContainer.appendChild(ansCounterDiv);
 
-
-
-
-    const dwnanswerContainer = document.getElementById('answer-container');
     const pdfBtn = document.createElement('button');
     pdfBtn.textContent = 'Download as PDF';
-    pdfBtn.id = "pdfBtn";
-    dwnanswerContainer.appendChild(pdfBtn);
+    answerContainer.appendChild(pdfBtn);
     const txtBtn = document.createElement('button');
     txtBtn.textContent = 'Download as TXT';
-    txtBtn.id = "txtBtn";
-    dwnanswerContainer.appendChild(txtBtn);
+    answerContainer.appendChild(txtBtn);
+    const cpyBtn = document.createElement('button');
+    cpyBtn.textContent = 'Copy to Clipboard';
+    answerContainer.appendChild(cpyBtn);
 
     document.getElementById('input-container').classList.add('hidden');
     document.getElementById('answer-container').classList.remove('hidden');
 
     let answersContent = document.getElementById("answers");
+    // Clone the content of answersContent
+    let tempContent = answersContent.cloneNode(true);
 
-    document.getElementById("txtBtn").addEventListener("click", () => {
-        // Clone the content of answersContent
-        let tempContent = answersContent.cloneNode(true);
+    // Remove all buttons from the cloned content
+    let txtContentbuttons = tempContent.querySelectorAll("button");
+    txtContentbuttons.forEach(button => button.remove());
 
-        // Remove all buttons from the cloned content
-        let buttons = tempContent.querySelectorAll("button");
-        buttons.forEach(button => button.remove());
+    // Get the cleaned text content
+    let exportValue = tempContent.innerText;
 
-        // Get the cleaned text content
-        let valueinput = tempContent.innerText;
+    txtBtn.addEventListener("click", () => {
 
         // Create the Blob and initiate the download
-        let blobdtMIME = new Blob([valueinput], { type: "text/plain" });
+        let blobdtMIME = new Blob([exportValue], { type: "text/plain" });
         let url = URL.createObjectURL(blobdtMIME);
         let anele = document.createElement("a");
         anele.setAttribute("download", "answers.txt");
@@ -129,21 +128,22 @@ function displayAnswers() {
         console.log(blobdtMIME);
     });
 
-    document.getElementById("pdfBtn").addEventListener("click", () => {
-        // Clone the content of answersContent
-        let tempContent = answersContent.cloneNode(true);
-
-        // Remove all buttons from the cloned content
-        let buttons = tempContent.querySelectorAll("button");
-        buttons.forEach(button => button.remove());
-
-        // Get the cleaned text content
-        let valueinput = tempContent.innerText;
-
+    pdfBtn.addEventListener("click", () => {
         // Use jsPDF to create and download the PDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text(valueinput, 10, 10);
+        doc.text(exportValue, 10, 10);
         doc.save("answers.pdf");
+    });
+
+    cpyBtn.addEventListener("click", () => {
+        // Copy the text content
+        navigator.clipboard.writeText(exportValue)
+            .then(() => {
+                alert("Text copied to clipboard!");
+            })
+            .catch((err) => {
+                console.error("Failed to copy text: ", err);
+            });
     });
 }
