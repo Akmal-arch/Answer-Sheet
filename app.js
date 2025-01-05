@@ -31,19 +31,77 @@ function displayAnswers() {
     answersDiv.innerHTML = '';
 
     inputs.forEach((input, index) => {
-        const answer = document.createElement('span');
-        answer.textContent = `${index + 1}. ${input.value.trim() || 'No answer provided'}`;
+        const answer = document.createElement('div');
+        const answerText = document.createElement('span');
+        const btnGroup = document.createElement('div');
+        btnGroup.className = "btn-group";
+        answerText.className = 'answer-text';
+        answerText.textContent = `${index + 1}. ${input.value.trim() || 'No answer provided'}\n`;
+        answer.className = 'answer-item';
+        const correctBtn = document.createElement('button');
+        const incorrectBtn = document.createElement('button');
+        correctBtn.textContent = '✅';
+        correctBtn.id = 'correct-btn';
+        incorrectBtn.textContent = '❌';
+        incorrectBtn.id = 'incorrect-btn';
+        answer.appendChild(answerText);
+        btnGroup.appendChild(correctBtn);
+        btnGroup.appendChild(incorrectBtn);
+        answer.appendChild(btnGroup);
         answersDiv.appendChild(answer);
     });
-    const answerContainer = document.getElementById('answer-container');
+    let correctAns = 0;
+    let incorrectAns = 0;
+
+    const ansCounterDiv = document.createElement('div');
+    ansCounterDiv.id = 'answer-counter';
+    ansCounterDiv.textContent = `Total Answers: ${document.querySelectorAll('.btn-group').length}\n`;
+
+    const correctCounter = document.createElement('p');
+    correctCounter.className = 'correct-counter';
+    correctCounter.textContent = "Correct: 0";
+    const incorrectCounter = document.createElement('p');
+    incorrectCounter.className = 'incorrect-counter';
+    incorrectCounter.textContent = "Incorrect: 0";
+
+    // Select all rows containing answers
+    document.querySelectorAll('.btn-group').forEach((row) => {
+        const correctBtn = row.querySelector('#correct-btn');
+        const incorrectBtn = row.querySelector('#incorrect-btn');
+
+        // Event listener for "correct" button
+        correctBtn.addEventListener('click', (e) => {
+            correctAns++;
+            correctCounter.textContent = `Correct: ${correctAns}`;
+            incorrectBtn.classList.add('disabled');
+            correctBtn.classList.add('disabled');
+        });
+
+        // Event listener for "incorrect" button
+        incorrectBtn.addEventListener('click', () => {
+            incorrectAns++;
+            incorrectCounter.textContent = `Incorrect: ${incorrectAns}`;
+            correctBtn.classList.add('disabled');
+            incorrectBtn.classList.add('disabled');
+        });
+    });
+
+    ansCounterDiv.appendChild(correctCounter);
+    ansCounterDiv.appendChild(incorrectCounter);
+    document.getElementById('answer-container').appendChild(ansCounterDiv);
+
+
+
+
+    const dwnanswerContainer = document.getElementById('answer-container');
     const pdfBtn = document.createElement('button');
     pdfBtn.textContent = 'Download as PDF';
     pdfBtn.id = "pdfBtn";
-    answerContainer.appendChild(pdfBtn);
+    dwnanswerContainer.appendChild(pdfBtn);
     const txtBtn = document.createElement('button');
     txtBtn.textContent = 'Download as TXT';
     txtBtn.id = "txtBtn";
-    answerContainer.appendChild(txtBtn);
+    dwnanswerContainer.appendChild(txtBtn);
 
     document.getElementById('input-container').classList.add('hidden');
     document.getElementById('answer-container').classList.remove('hidden');
@@ -51,7 +109,17 @@ function displayAnswers() {
     let answersContent = document.getElementById("answers");
 
     document.getElementById("txtBtn").addEventListener("click", () => {
-        let valueinput = answersContent.innerText;
+        // Clone the content of answersContent
+        let tempContent = answersContent.cloneNode(true);
+
+        // Remove all buttons from the cloned content
+        let buttons = tempContent.querySelectorAll("button");
+        buttons.forEach(button => button.remove());
+
+        // Get the cleaned text content
+        let valueinput = tempContent.innerText;
+
+        // Create the Blob and initiate the download
         let blobdtMIME = new Blob([valueinput], { type: "text/plain" });
         let url = URL.createObjectURL(blobdtMIME);
         let anele = document.createElement("a");
@@ -60,8 +128,19 @@ function displayAnswers() {
         anele.click();
         console.log(blobdtMIME);
     });
+
     document.getElementById("pdfBtn").addEventListener("click", () => {
-        let valueinput = answersContent.innerText;
+        // Clone the content of answersContent
+        let tempContent = answersContent.cloneNode(true);
+
+        // Remove all buttons from the cloned content
+        let buttons = tempContent.querySelectorAll("button");
+        buttons.forEach(button => button.remove());
+
+        // Get the cleaned text content
+        let valueinput = tempContent.innerText;
+
+        // Use jsPDF to create and download the PDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         doc.text(valueinput, 10, 10);
