@@ -35,72 +35,125 @@ function displayAnswers() {
     inputs.forEach((input, index) => {
         const answer = document.createElement('div');
         const answerText = document.createElement('span');
-        const btnGroup = document.createElement('div');
-        btnGroup.className = "btn-group";
         answerText.className = 'answer-text';
         answerText.textContent = `${index + 1}. ${input.value.trim() || 'No answer provided'}\n`;
         answer.className = 'answer-item';
-        const correctBtn = document.createElement('button');
-        const incorrectBtn = document.createElement('button');
-        correctBtn.textContent = '✅';
-        correctBtn.id = 'correct-btn';
-        incorrectBtn.textContent = '❌';
-        incorrectBtn.id = 'incorrect-btn';
         answer.appendChild(answerText);
-        btnGroup.appendChild(correctBtn);
-        btnGroup.appendChild(incorrectBtn);
-        answer.appendChild(btnGroup);
         answersDiv.appendChild(answer);
     });
-    let correctAns = 0;
-    let incorrectAns = 0;
 
-    const ansCounterDiv = document.createElement('div');
-    ansCounterDiv.id = 'answer-counter';
-    ansCounterDiv.textContent = `Total Answers: ${document.querySelectorAll('.btn-group').length}\n`;
-
-    const correctCounter = document.createElement('p');
-    correctCounter.className = 'correct-counter';
-    correctCounter.textContent = "Correct: 0";
-    const incorrectCounter = document.createElement('p');
-    incorrectCounter.className = 'incorrect-counter';
-    incorrectCounter.textContent = "Incorrect: 0";
-
-    // Select all rows containing answers
-    document.querySelectorAll('.btn-group').forEach((row) => {
-        const correctBtn = row.querySelector('#correct-btn');
-        const incorrectBtn = row.querySelector('#incorrect-btn');
-
-        // Event listener for "correct" button
-        correctBtn.addEventListener('click', (e) => {
-            correctAns++;
-            correctCounter.textContent = `Correct: ${correctAns}`;
-            incorrectBtn.classList.add('disabled');
-            correctBtn.classList.add('disabled');
+    const checkBtn = document.createElement('button');
+    checkBtn.textContent = 'Check Answers';
+    checkBtn.addEventListener('click', () => {
+        const cpyResultBtn = document.createElement('button');
+        cpyResultBtn.textContent = 'Copy Results to Clipboard';
+        cpyResultBtn.addEventListener('click', () => {
+            let resultContent = ansCounterDiv;
+            let tempResContent = resultContent.cloneNode(true);
+            let resContentButtons = tempResContent.querySelectorAll("button");
+            resContentButtons.forEach(button => button.remove());
+            let exportResult = tempResContent.textContent;
+            navigator.clipboard.writeText(exportResult)
+                .then(() => {
+                    alert("Results copied to clipboard!");
+                })
+                .catch((err) => {
+                    console.error("Failed to copy text: ", err);
+                });
+        })
+        const backBtn = document.createElement('button');
+        backBtn.textContent = 'Back';
+        backBtn.addEventListener('click', () => {
+            ansCounterDiv.remove();
+            backBtn.remove();
+            dwnBtnGroup.classList.remove('hidden');
+            answersDiv.innerHTML = '';
+            inputs.forEach((input, index) => {
+                const answer = document.createElement('div');
+                const answerText = document.createElement('span');
+                answerText.className = 'answer-text';
+                answerText.textContent = `${index + 1}. ${input.value.trim() || 'No answer provided'}\n`;
+                answer.className = 'answer-item';
+                answer.appendChild(answerText);
+                answersDiv.appendChild(answer);
+            });
+        })
+        dwnBtnGroup.classList.add('hidden');
+        let correctAns = 0;
+        let incorrectAns = 0;
+        answersDiv.innerHTML = '';
+        inputs.forEach((input, index) => {
+            const answer = document.createElement('div');
+            const answerText = document.createElement('span');
+            const btnGroup = document.createElement('div');
+            btnGroup.className = "btn-group";
+            answerText.className = 'answer-text';
+            answerText.textContent = `${index + 1}. ${input.value.trim() || 'No answer provided'}\n`;
+            answer.className = 'answer-item';
+            const correctBtn = document.createElement('button');
+            const incorrectBtn = document.createElement('button');
+            correctBtn.textContent = '✅';
+            correctBtn.id = 'correct-btn';
+            incorrectBtn.textContent = '❌';
+            incorrectBtn.id = 'incorrect-btn';
+            answer.appendChild(answerText);
+            btnGroup.appendChild(correctBtn);
+            btnGroup.appendChild(incorrectBtn);
+            answer.appendChild(btnGroup);
+            answersDiv.appendChild(answer);
         });
 
-        // Event listener for "incorrect" button
-        incorrectBtn.addEventListener('click', () => {
-            incorrectAns++;
-            incorrectCounter.textContent = `Incorrect: ${incorrectAns}`;
-            correctBtn.classList.add('disabled');
-            incorrectBtn.classList.add('disabled');
+        const ansCounterDiv = document.createElement('div');
+        ansCounterDiv.id = 'answer-counter';
+        ansCounterDiv.textContent = `Total Answers: ${document.querySelectorAll('.btn-group').length}\n`;
+
+        const correctCounter = document.createElement('p');
+        correctCounter.className = 'correct-counter';
+        correctCounter.textContent = "Correct: 0";
+        const incorrectCounter = document.createElement('p');
+        incorrectCounter.className = 'incorrect-counter';
+        incorrectCounter.textContent = "Incorrect: 0";
+
+        // Select all rows containing answers
+        document.querySelectorAll('.btn-group').forEach((row) => {
+            const correctBtn = row.querySelector('#correct-btn');
+            const incorrectBtn = row.querySelector('#incorrect-btn');
+
+            // Event listener for "correct" button
+            correctBtn.addEventListener('click', (e) => {
+                correctAns++;
+                correctCounter.textContent = `Correct: ${correctAns}\n`;
+                incorrectBtn.classList.add('disabled');
+                correctBtn.classList.add('disabled');
+            });
+
+            // Event listener for "incorrect" button
+            incorrectBtn.addEventListener('click', () => {
+                incorrectAns++;
+                incorrectCounter.textContent = `Incorrect: ${incorrectAns}`;
+                correctBtn.classList.add('disabled');
+                incorrectBtn.classList.add('disabled');
+            });
         });
+        ansCounterDiv.appendChild(correctCounter);
+        ansCounterDiv.appendChild(incorrectCounter);
+        ansCounterDiv.appendChild(cpyResultBtn);
+        ansCounterDiv.appendChild(backBtn)
+        answerContainer.appendChild(ansCounterDiv);
     });
-
-    ansCounterDiv.appendChild(correctCounter);
-    ansCounterDiv.appendChild(incorrectCounter);
-    answerContainer.appendChild(ansCounterDiv);
-
+    const dwnBtnGroup = document.createElement('div');
+    dwnBtnGroup.appendChild(checkBtn);
     const pdfBtn = document.createElement('button');
     pdfBtn.textContent = 'Download as PDF';
-    answerContainer.appendChild(pdfBtn);
+    dwnBtnGroup.appendChild(pdfBtn);
     const txtBtn = document.createElement('button');
     txtBtn.textContent = 'Download as TXT';
-    answerContainer.appendChild(txtBtn);
+    dwnBtnGroup.appendChild(txtBtn);
     const cpyBtn = document.createElement('button');
     cpyBtn.textContent = 'Copy to Clipboard';
-    answerContainer.appendChild(cpyBtn);
+    dwnBtnGroup.appendChild(cpyBtn);
+    answerContainer.appendChild(dwnBtnGroup);
+
 
     document.getElementById('input-container').classList.add('hidden');
     document.getElementById('answer-container').classList.remove('hidden');
