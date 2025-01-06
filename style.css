@@ -121,6 +121,9 @@ button.disabled {
     opacity: 0.2;
     pointer-events: none;
 }
+button.half-disabled {
+    pointer-events: none;
+}
 
 .correct-counter {
     color: #28a745;

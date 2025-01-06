@@ -165,7 +165,7 @@ function displayAnswers() {
                 correctAns++;
                 correctCounter.textContent = `Correct: ${correctAns}\n`;
                 incorrectBtn.classList.add('disabled');
-                // correctBtn.classList.add('disabled');
+                correctBtn.classList.add('half-disabled');
             });
 
             // Event listener for "incorrect" button
@@ -173,7 +173,7 @@ function displayAnswers() {
                 incorrectAns++;
                 incorrectCounter.textContent = `Incorrect: ${incorrectAns}`;
                 correctBtn.classList.add('disabled');
-                // incorrectBtn.classList.add('disabled');
+                incorrectBtn.classList.add('half-disabled');
             });
         });
         ansCounterDiv.appendChild(correctCounter);
